@@ -8,96 +8,201 @@
   <meta name="description" content="Pratik Yogesh Nerpagar (Paradoxai77) — Hacker Enthusiast & Web Developer">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 
 <body>
-  <header>
-    <div class="container">
-      <div class="logo glitch" onclick="window.location.href='index.html'">Paradoxai77</div>
-      <nav>
-        <ul>
-          <li><a href="index.html" class="active">// home</a></li>
-          <li><a href="about.html">// about</a></li>
-          <li><a href="skills.html">// skills</a></li>
-          <li><a href="projects.html">// projects</a></li>
-          <li><a href="credentials.html">// credentials</a></li>
-          <li><a href="contact.html">// contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <div id="root"></div>
 
-  <main>
-    <!-- HERO SECTION -->
-    <!-- PREMIUM HERO SECTION -->
-    <section id="home" class="hero-premium">
-      <div class="hero-container">
-        <!-- Left Side: Intro -->
-        <div class="hero-left" data-aos="fade-right">
-          <div class="intro-group">
-            <span class="greeting">Hello! I'm</span>
-            <h1 class="hero-name glitch" data-text="PRATIK NERPAGAR">PRATIK<br>NERPAGAR</h1>
-          </div>
-          <div class="social-sidebar">
-            <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    // ── Preloader ──────────────────────────────────────────────
+    function Preloader() {
+      const [fade, setFade] = useState(false);
+      const [hidden, setHidden] = useState(false);
+      useEffect(() => {
+        const t1 = setTimeout(() => setFade(true), 2000);
+        const t2 = setTimeout(() => setHidden(true), 2500);
+        return () => { clearTimeout(t1); clearTimeout(t2); };
+      }, []);
+      if (hidden) return null;
+      return (
+        <div id="preloader" className={fade ? 'fade-out' : ''}>
+          <div className="loader-content">
+            <div className="logo glitch">Paradoxai77</div>
+            <div className="loading-bar"><div className="loading-progress"></div></div>
+            <div className="loading-text">INITIALIZING_SYSTEM... <span className="blink">_</span></div>
           </div>
         </div>
+      );
+    }
 
-        <!-- Center: Avatar with Rotating Eyes -->
-        <div class="hero-center" data-aos="zoom-in">
-          <div class="avatar-container">
-            <div class="avatar-3d">
-              <div class="cap"></div>
-              <div class="face">
-                <div class="eyes-container">
-                  <div class="eye" id="eye-l">
-                    <div class="pupil"></div>
-                  </div>
-                  <div class="eye" id="eye-r">
-                    <div class="pupil"></div>
-                  </div>
+    // ── Header ─────────────────────────────────────────────────
+    function Header() {
+      return (
+        <header>
+          <div className="container" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <div className="logo glitch" onClick={() => window.location.href='index.html'}>Paradoxai77</div>
+            <nav>
+              <ul style={{display:'flex',listStyle:'none',gap:'2rem',margin:0,padding:0}}>
+                <li><a href="index.html" className="active">// home</a></li>
+                <li><a href="about.html">// about</a></li>
+                <li><a href="skills.html">// skills</a></li>
+                <li><a href="projects.html">// projects</a></li>
+                <li><a href="credentials.html">// credentials</a></li>
+                <li><a href="contact.html">// contact</a></li>
+              </ul>
+            </nav>
+          </div>
+        </header>
+      );
+    }
+
+    // ── Classy Character with Live Rotating Eyes ───────────────
+    function Character() {
+      const eyeLRef = useRef(null);
+      const eyeRRef = useRef(null);
+      const [pupils, setPupils] = useState({ l: {}, r: {} });
+
+      useEffect(() => {
+        function onMove(e) {
+          function calc(ref) {
+            if (!ref.current) return {};
+            const rect = ref.current.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const angle = Math.atan2(e.clientY - cy, e.clientX - cx);
+            const dist = Math.min(rect.width / 4, Math.hypot(e.clientX - cx, e.clientY - cy) / 15);
+            return { transform: `translate(calc(-50% + ${Math.cos(angle)*dist}px), calc(-50% + ${Math.sin(angle)*dist}px))` };
+          }
+          setPupils({ l: calc(eyeLRef), r: calc(eyeRRef) });
+        }
+        window.addEventListener('mousemove', onMove);
+        return () => window.removeEventListener('mousemove', onMove);
+      }, []);
+
+      return (
+        <div className="avatar-container">
+          <div className="character-wrapper css-avatar">
+            <div className="shoulders"></div>
+            <div className="face">
+              <div className="cap"></div>
+              <div className="ears">
+                <div className="ear"></div>
+                <div className="ear"></div>
+              </div>
+              <div className="eyes-container">
+                <div className="eye" ref={eyeLRef}>
+                  <div className="pupil" style={pupils.l}></div>
                 </div>
-                <div class="nose"></div>
-                <div class="mouth">
-                  <div class="teeth"></div>
+                <div className="eye" ref={eyeRRef}>
+                  <div className="pupil" style={pupils.r}></div>
                 </div>
               </div>
-              <div class="ears">
-                <div class="ear left"></div>
-                <div class="ear right"></div>
-              </div>
-              <div class="shoulders"></div>
+              <div className="nose"></div>
+              <div className="mouth"><div className="teeth"></div></div>
             </div>
           </div>
         </div>
+      );
+    }
 
-        <!-- Right Side: Roles -->
-        <div class="hero-right" data-aos="fade-left">
-          <div class="role-group">
-            <p class="role-subtitle">A Full Stack</p>
-            <h2 class="role-title">ENGINEER<br><span class="highlight">DEVELOPER</span></h2>
+    // ── Typing Effect ──────────────────────────────────────────
+    function TypingText() {
+      const words = ["Web Developer.", "AI Explorer.", "Problem Solver.", "AR/VR Enthusiast."];
+      const [display, setDisplay] = useState("");
+      const [wIdx, setWIdx] = useState(0);
+      const [deleting, setDeleting] = useState(false);
+
+      useEffect(() => {
+        const word = words[wIdx];
+        let timeout;
+        if (!deleting && display === word) {
+          timeout = setTimeout(() => setDeleting(true), 1800);
+        } else if (deleting && display === "") {
+          setDeleting(false);
+          setWIdx(i => (i + 1) % words.length);
+        } else {
+          timeout = setTimeout(() => {
+            setDisplay(deleting ? word.slice(0, display.length - 1) : word.slice(0, display.length + 1));
+          }, deleting ? 60 : 130);
+        }
+        return () => clearTimeout(timeout);
+      }, [display, deleting, wIdx]);
+
+      return (
+        <div className="typing-text" style={{marginTop:'1.5rem', minHeight:'1.6em'}}>
+          {display}<span className="cursor"></span>
+        </div>
+      );
+    }
+
+    // ── Hero Left ──────────────────────────────────────────────
+    function HeroLeft() {
+      return (
+        <div className="hero-left">
+          <div className="intro-group">
+            <span className="greeting">Hello! I'm</span>
+            <h1 className="hero-name glitch" data-text="PRATIK NERPAGAR">PRATIK<br/>NERPAGAR</h1>
           </div>
-          <div class="resume-link">
-            <a href="#" class="resume-btn">RESUME <i class="far fa-file-pdf"></i></a>
+          <TypingText />
+          <div className="social-sidebar">
+            <a href="https://github.com/Paradoxai77" target="_blank" rel="noopener noreferrer" className="social-icon"><i className="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/pratik-nerpagar-1b6156397" target="_blank" rel="noopener noreferrer" className="social-icon"><i className="fab fa-linkedin"></i></a>
+            <a href="https://x.com/Pratik_Nerpagar" target="_blank" rel="noopener noreferrer" className="social-icon"><i className="fab fa-twitter"></i></a>
+            <a href="https://www.instagram.com/invites/contact/?utm_source=ig_contact_invite&utm_medium=copy_link&utm_content=yj6jgfl" target="_blank" rel="noopener noreferrer" className="social-icon"><i className="fab fa-instagram"></i></a>
           </div>
         </div>
-      </div>
+      );
+    }
 
-      <!-- Glowing Background Effects -->
-      <div class="hero-glow"></div>
-    </section>
-  </main>
+    // ── Hero Right ─────────────────────────────────────────────
+    function HeroRight() {
+      return (
+        <div className="hero-right">
+          <div className="role-group">
+            <p className="role-subtitle">A Full Stack</p>
+            <h2 className="role-title">ENGINEER<br/><span className="highlight">DEVELOPER</span></h2>
+          </div>
+          <div className="resume-link">
+            <a href="#" className="resume-btn">RESUME <i className="far fa-file-pdf"></i></a>
+          </div>
+        </div>
+      );
+    }
 
-  <footer>
-    <div class="container">
-      <p>// © 2025 Paradoxai77 · SYSTEM_STATUS: OPERATIONAL · BUILT_WITH_CARE</p>
-    </div>
-  </footer>
+    // ── App Root ───────────────────────────────────────────────
+    function App() {
+      return (
+        <>
+          <Preloader />
+          <Header />
+          <main>
+            <section id="home" className="hero-premium">
+              <div className="hero-container">
+                <HeroLeft />
+                <div className="hero-center">
+                  <Character />
+                </div>
+                <HeroRight />
+              </div>
+              <div className="hero-glow"></div>
+            </section>
+          </main>
+          <footer>
+            <div className="container">
+              <p>// © 2025 Paradoxai77 · SYSTEM_STATUS: OPERATIONAL · BUILT_WITH_CARE</p>
+            </div>
+          </footer>
+        </>
+      );
+    }
 
-  <script src="script.js"></script>
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
 </body>
 
 </html>

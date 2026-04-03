@@ -1,4 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
+	// 0. Preloader Logic
+	const preloader = document.getElementById('preloader');
+	if (preloader) {
+		setTimeout(() => {
+			preloader.classList.add('fade-out');
+			setTimeout(() => {
+				preloader.style.display = 'none';
+			}, 500);
+		}, 2000); // the loading bar takes 2s to complete
+	}
+
 	// 1. Typing Effect for Hero
 	const words = ["Web Developer.", "AI Explorer.", "Problem Solver.", "AR/VR Enthusiast."];
 	let i = 0;
