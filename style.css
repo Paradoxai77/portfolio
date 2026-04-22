@@ -307,6 +307,7 @@ nav a.active {
   position: relative;
   overflow: hidden;
   padding-top: 80px;
+  perspective: 1000px;
 }
 
 .hero-container {
@@ -319,6 +320,8 @@ nav a.active {
   z-index: 2;
   gap: 1.5rem;
   margin: 0 auto;
+  transform-style: preserve-3d;
+  transition: transform 0.2s ease-out;
 }
 
 /* Left & Right Side Common */
@@ -353,6 +356,10 @@ nav a.active {
   font-weight: 800;
   color: #fff;
   letter-spacing: -2px;
+  text-shadow: 
+    2px 2px 0px var(--primary),
+    4px 4px 0px rgba(0,0,0,0.5);
+  transform: translateZ(100px);
 }
 
 .social-sidebar {
@@ -419,7 +426,7 @@ nav a.active {
   position: absolute;
   bottom: 85px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateZ(50px);
   width: 170px;
   height: 210px;
   background: #f1c27d; /* Classy warm skin tone */
@@ -429,6 +436,7 @@ nav a.active {
     0 15px 35px rgba(0, 0, 0, 0.4);
   z-index: 2;
   overflow: visible;
+  transform-style: preserve-3d;
 }
 
 /* Classy Hairstyle (replacing cap) */
@@ -442,6 +450,7 @@ nav a.active {
   border-radius: 90px 90px 20px 20px;
   z-index: 3;
   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  transform: translateZ(30px);
 }
 
 .cap::after {
@@ -553,7 +562,7 @@ nav a.active {
   position: absolute;
   bottom: 0px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateZ(-20px);
   width: 320px;
   height: 110px;
   background: #111; /* Sleek black turtleneck */
@@ -618,19 +627,7 @@ nav a.active {
   border-color: var(--primary);
 }
 
-/* Hero Glow */
-.hero-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
-  opacity: 0.3;
-  pointer-events: none;
-  z-index: 1;
-}
+
 
 /* Responsive Overrides */
 @media (max-width: 1100px) {
@@ -740,6 +737,14 @@ section:not(.hero-premium) {
   border: 1px solid var(--border);
   padding: 2rem;
   border-radius: 8px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-style: preserve-3d;
+}
+
+.skill-card:hover {
+  transform: rotateY(15deg) rotateX(5deg) translateZ(30px);
+  border-color: var(--primary);
+  box-shadow: -10px 10px 20px rgba(0,0,0,0.4);
 }
 
 .skill-list {
@@ -773,14 +778,15 @@ section:not(.hero-premium) {
   border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
+  transform-style: preserve-3d;
 }
 
 .project-card:hover {
   border-color: var(--primary);
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transform: translateY(-10px) rotateX(10deg) rotateY(-10deg);
+  box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.5);
 }
 
 .project-image {
@@ -790,14 +796,31 @@ section:not(.hero-premium) {
   overflow: hidden;
 }
 
+.project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.5s ease;
+  z-index: 1;
+  opacity: 0.7;
+}
+
+.project-card:hover .project-image img {
+  transform: scale(1.1);
+  opacity: 1 !important;
+}
+
 .project-image::after {
-  content: "ENCRYPTED_DATA";
+  content: "DATA_STREAMS";
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-family: var(--font-terminal);
-  color: var(--border);
+  color: var(--primary);
+  opacity: 0.15;
+  z-index: 2;
+  pointer-events: none;
   font-size: 2rem;
 }
 
